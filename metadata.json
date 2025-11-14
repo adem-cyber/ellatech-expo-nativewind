@@ -1,0 +1,5 @@
+{
+  "name": "Inventory Management System",
+  "description": "A simple application to manage users, products, and track inventory changes. All data is stored locally in your browser.",
+  "requestFramePermissions": []
+}

@@ -1,42 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 
-function useLocalStorage<T>(key: string, initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] {
-  const [storedValue, setStoredValue] = useState<T>(() => {
+export function useLocalStorage<T>(
+  key: string,
+  initialValue: T
+): [T, Dispatch<SetStateAction<T>>] {
+  const [stored, setStored] = useState<T>(() => {
     try {
-      if (typeof window === 'undefined') return initialValue; // ✅ safe for SSR
       const item = window.localStorage.getItem(key);
       return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      console.error(error);
+    } catch {
       return initialValue;
     }
   });
 
-  const setValue: React.Dispatch<React.SetStateAction<T>> = (value) => {
+  const setValue = (value: T | ((prev: T) => T)) => {
     try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      if (typeof window !== 'undefined') {
-        window.localStorage.setItem(key, JSON.stringify(valueToStore));
-      }
-    } catch (error) {
-      console.error(error);
-    }
+      const toStore = value instanceof Function ? value(stored) : value;
+      setStored(toStore);
+      window.localStorage.setItem(key, JSON.stringify(toStore));
+    } catch {}
   };
 
   useEffect(() => {
     try {
-      if (typeof window === 'undefined') return;
       const item = window.localStorage.getItem(key);
-      if (item) {
-        setStoredValue(JSON.parse(item));
-      }
-    } catch (error) {
-      console.error(error);
-    }
+      if (item) setStored(JSON.parse(item));
+    } catch {}
   }, [key]);
 
-  return [storedValue, setValue];
+  return [stored, setValue];
 }
-
-export default useLocalStorage;

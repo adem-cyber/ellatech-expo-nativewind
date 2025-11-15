@@ -1,11 +1,11 @@
 
+
 export interface User {
   id: string;
   fullName: string;
   email: string;
   createdAt: string;
 }
-
 export interface Product {
   id: string;
   sku: string;
@@ -14,9 +14,7 @@ export interface Product {
   quantity: number;
   lastUpdated: string;
 }
-
-export type TransactionType = 'initial' | 'increase' | 'decrease';
-
+export type TransactionType = "initial" | "increase" | "decrease";
 export interface Transaction {
   id: string;
   productId: string;
@@ -26,5 +24,4 @@ export interface Transaction {
   amount: number;
   timestamp: string;
 }
-
 export type AppTab = "dashboard" | "products" | "users" | "history";
